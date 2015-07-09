@@ -100,6 +100,7 @@
       integer i
       integer req
 
+print *,'entering test_vector'
       print *, "Test vector of MPI_INTEGER"
 
       call mpi_type_vector(3, 2, 3, mpi_integer, datatype, ierr)
@@ -118,6 +119,7 @@
           return
         end if
       end do
+print *,'exiting test_vector'
       end
 
 !!!!!!!!!!!!!!!!!!!!!
@@ -131,13 +133,16 @@
       use mpi
       integer ec
         integer vector_type
-        integer (kind=mpi_address_kind) extent
+!       integer (kind=mpi_address_kind) extent
+        integer*4 extent
+        integer*4 extent4
         integer i
         integer a(10)
         integer b(10)
         integer index_test(6)
         integer ierr
         integer req
+        integer ub, lb
 
         data a/1,2,3,4,5,6,7,8,9,10/, b/0,0,0,0,0,0,0,0,0,0/
         data index_test/1,2,5,6,9,10/
@@ -145,23 +150,36 @@
         print *, "Vector type with stride 4 in bytes"
 
         call mpi_type_extent(mpi_integer, extent, ierr)
-        call mpi_type_hvector(3, 2, 4 * extent, mpi_integer, &
+print 110,'after mpi_type_extent mpi_integer, extent=',extent
+extent4 = extent
+        call mpi_type_hvector(3, 2, 4 * extent4, mpi_integer, &
              vector_type, ierr)
         call mpi_type_commit(vector_type, ierr)
+call mpi_type_extent(vector_type, extent, ierr)
+print 110,'after mpi_type_extent vector_type, extent=',extent
+call mpi_type_lb(vector_type,lb,ier)
+call mpi_type_ub(vector_type,ub,ier)
+print *, "Vector type bounds=",lb,ub
+110 format(A,Z16)
 #ifdef TEST_INTERNAL
         call copy_data2(a,1,vector_type, b,1,vector_type, ierr)
 #else
+print *,'sending a'
         call mpi_isend(a, 1, vector_type, 0, 0, mpi_comm_world,req,ierr)
+print *,'receiving b'
         call mpi_irecv(b, 1, vector_type, mpi_any_source, mpi_any_tag, &
                        mpi_comm_world, req, ierr)
+print *,'received b'
 #endif
         do i=1,6
+print *,'DEBUG: ',i,index_test(i),a(index_test(i))
           if (a(index_test(i)) .ne. (b(index_test(i)))) then
             print *, ">>>FAILED: test_simple_hvector"
             ec = ec+1
             return 
           end if
         end do
+print *,'exiting test_simple_hvector'
       end subroutine
 
 !!!!!!!!!!!!!!!!!!!!
@@ -677,4 +695,3 @@
           end if
         end do
       end subroutine 
-                         

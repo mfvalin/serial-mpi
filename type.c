@@ -432,10 +432,11 @@ int Type_vector(int count, int blocklen, int stride,
 /*******************************************************/
 
 FC_FUNC( mpi_type_hvector, MPI_TYPE_HVECTOR )
-         (int * count,   long * blocklen, long * stride,
+         (int * count,   int * blocklen, int * stride,
           int * oldtype, int * newtype,   int * ierr)
 {
-  *ierr = MPI_Type_hvector(*count, *blocklen, *stride, *oldtype, newtype);
+  long Stride = *stride;
+  *ierr = MPI_Type_hvector(*count, *blocklen, Stride, *oldtype, newtype);
 }
 
 int MPI_Type_hvector(int count, int blocklen, MPI_Aint stride,
@@ -628,9 +629,11 @@ int Type_size(Datatype type, int * size)
 /* MPI_Type_lb: Returns the lower bound (which may be overridden
  * or calculated)
  */
-FC_FUNC( mpi_type_lb, MPI_TYPE_LB )(int * type, long * lb, int * ierr)
+FC_FUNC( mpi_type_lb, MPI_TYPE_LB )(int * type, int * lb, int * ierr)
 {
-  *ierr = MPI_Type_lb(*type, lb);
+  MPI_Aint Lb;
+  *ierr = MPI_Type_lb(*type, &Lb);
+  *lb = Lb;
 }
 
 int MPI_Type_lb(MPI_Datatype type, MPI_Aint * lb)
@@ -648,9 +651,11 @@ int Type_lb(Datatype type, MPI_Aint * lb)
 /* MPI_Type_ub: Return upper bound (which may be overridden
  * or calculated
  */
-FC_FUNC( mpi_type_ub, MPI_TYPE_UB )(int * type, long * ub, int * ierr)
+FC_FUNC( mpi_type_ub, MPI_TYPE_UB )(int * type, int * ub, int * ierr)
 {
-  *ierr = MPI_Type_ub(*type, ub);
+  MPI_Aint Ub;
+  *ierr = MPI_Type_ub(*type, &Ub);
+  *ub = Ub;
 }
 
 int MPI_Type_ub(MPI_Datatype type, MPI_Aint * ub)
@@ -699,9 +704,11 @@ int MPI_Get_address(void * loc, MPI_Aint * address)
 
 /* MPI_Type_extent: return ub-lb, plus padding
  */
-FC_FUNC( mpi_type_extent, MPI_TYPE_EXTENT)(int * type, long * extent, int * ierr)
+FC_FUNC( mpi_type_extent, MPI_TYPE_EXTENT)(int * type, int * extent, int * ierr)
 {
-  *ierr = MPI_Type_extent(*type, extent);
+  MPI_Aint Extent;
+  *ierr = MPI_Type_extent(*type, &Extent);
+  *extent = Extent;
 }
 
 int MPI_Type_extent(MPI_Datatype type, MPI_Aint * extent)

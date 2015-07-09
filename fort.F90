@@ -1,5 +1,3 @@
-
-
 	subroutine mpi_init(ierror)
 
         implicit none
@@ -59,4 +57,3 @@
 	call mpi_save_fort_pointers(MPI_STATUS_IGNORE,MPI_STATUSES_IGNORE,MPI_IN_PLACE)
 
 	end subroutine mpi_get_fort_pointers
-

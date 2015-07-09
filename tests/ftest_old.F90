@@ -120,22 +120,26 @@
 ! pack/unpack
 
 	position=0
+sbuf=-1
 	do i=1,5
           temp=100+i
 	  call mpi_pack(temp,1,MPI_INTEGER,sbuf,20,position,MPI_COMM_WORLD,ier)
+print *,'pack: temp,position',temp,position
  	end do
-
+print *,'sbuf=',sbuf
         call mpi_isend(sbuf,position,MPI_PACKED,0,0,MPI_COMM_WORLD,sreq(1),ier)
+rbuf=-2
 	call mpi_irecv(rbuf,position,MPI_PACKED,0,0,MPI_COMM_WORLD,rreq(1),ier)
         call mpi_waitall(1,rreq,status,ier)
-
+print *,'sbuf=',sbuf
+print *,'rbuf=',rbuf
         print *,"Pack/send/unpack:"
 
         position=0
 	do i=1,5
 	  call mpi_unpack( rbuf,20,position,temp,1,MPI_INTEGER, &
-                           MPI_COMM_WORLD)
-          print *,temp
+                           MPI_COMM_WORLD,ier)
+          print *,temp,position
         end do
         
         do i=1,5

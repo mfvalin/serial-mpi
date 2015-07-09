@@ -35,7 +35,7 @@ OBJS_ALL	= $(SRCS_C:.c=.o) \
 		  $(SRCS_F90:.F90=.o)
 
 
-INCPATH:= -I .
+INCPATH:= -I.
 
 
 ###############################
@@ -68,7 +68,7 @@ LIB	= lib$(MODULE).a
 	$(CC) -c $(INCPATH) $(DEFS) $(CPPDEFS) $(CFLAGS) $<
 
 .F90.o:
-	$(FC) -c $(INCFLAG) . $(INCPATH) $(DEFS) $(FPPDEFS) $(FCFLAGS) $(MPEUFLAGS) $<
+	$(FC) -c $(INCFLAG). $(INCPATH) $(DEFS) $(FPPDEFS) $(FCFLAGS) $(MPEUFLAGS) $<
 
 MYF90FLAGS=$(INCPATH) $(DEFS) $(FCFLAGS)  $(MPEUFLAGS)
 
@@ -81,7 +81,7 @@ clean:
 tests:
 	cd tests; make
 
-install:
+install: lib
 	$(MKINSTALLDIRS) $(libdir) $(includedir)
 	$(INSTALL) lib$(MODULE).a -m 644 $(libdir)
 	$(INSTALL) mpi.h -m 644 $(includedir)
