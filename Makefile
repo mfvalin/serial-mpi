@@ -42,21 +42,19 @@ INCPATH:= -I.
 
 # TARGETS
 
-default: lib$(MODULE).a
+LIB	= $(EC_ARCH)/lib$(MODULE).a
 
+default: lib 
 
 fort.o: mpif.h
 
-
-lib$(MODULE).a: $(OBJS_ALL)
+lib: $(OBJS_ALL)
 	echo $(OBJS_ALL)
 	mkdir -p $(EC_ARCH)
-	$(RM) $(EC_ARCH)/$@
-	$(AR) $(EC_ARCH)/$@ $(OBJS_ALL)
+	$(RM) $(LIB)
+	$(AR) $(LIB) $(OBJS_ALL)
 	mv mpi.mod $(EC_ARCH)/.
-
-
-LIB	= lib$(MODULE).a
+	rm -f *.o
 
 
 ###############################
@@ -76,17 +74,17 @@ MYF90FLAGS=$(INCPATH) $(DEFS) $(FCFLAGS)  $(MPEUFLAGS)
 .PHONY: clean tests install
 
 clean:
-	/bin/rm -f *.o ctest ftest mpi.mod config.log config.status
+	/bin/rm -f *.o mpi.mod 
 	cd tests ; $(MAKE) clean
 
 tests:
 	cd tests; make
 
-install: lib
-	$(MKINSTALLDIRS) $(libdir) $(includedir)
-	$(INSTALL) lib$(MODULE).a -m 644 $(libdir)
-	$(INSTALL) mpi.h -m 644 $(includedir)
-	$(INSTALL) mpif.h -m 644 $(includedir)
-
+install: $(LIB)
+	mkdir -p DIST/include/$(EC_ARCH)
+	cp mpif.h mpi.h DIST/include
+	cp $(EC_ARCH)/*.mod DIST/include/$(EC_ARCH)/.
+	mkdir -p DIST/lib/$(EC_ARCH)
+	cp $(EC_ARCH)/lib*.a DIST/lib/$(EC_ARCH)/.
 
 

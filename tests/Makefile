@@ -9,7 +9,7 @@ include ../Makefile.conf
 
 TINC    = -I.. -I../$(EC_ARCH)
 LDFLAGS = -L../$(EC_ARCH)
-MYLIBS    = $(LIBS) -l$(MODULE)
+MYLIBS    = -l$(MODULE)
 MYF90FLAGS=$(INCPATH) $(DEFS) $(FCFLAGS)  $(MPEUFLAGS)
 
 all: ctest ftest ctest2 ftest2
@@ -18,6 +18,10 @@ runtests: all
 	./ctest
 	@echo
 	./ftest
+	@echo
+	./ctest2
+	@echo
+	./ftest2
 	@echo
 
 ctest: ctest.c
