@@ -50,9 +50,10 @@ fort.o: mpif.h
 
 lib$(MODULE).a: $(OBJS_ALL)
 	echo $(OBJS_ALL)
-	$(RM) $@
-	$(AR) $@ $(OBJS_ALL)
-	$(RANLIB) $@
+	mkdir -p $(EC_ARCH)
+	$(RM) $(EC_ARCH)/$@
+	$(AR) $(EC_ARCH)/$@ $(OBJS_ALL)
+	mv mpi.mod $(EC_ARCH)/.
 
 
 LIB	= lib$(MODULE).a
@@ -75,7 +76,7 @@ MYF90FLAGS=$(INCPATH) $(DEFS) $(FCFLAGS)  $(MPEUFLAGS)
 .PHONY: clean tests install
 
 clean:
-	/bin/rm -f *.o ctest ftest $(LIB) mpi.mod config.log config.status
+	/bin/rm -f *.o ctest ftest mpi.mod config.log config.status
 	cd tests ; $(MAKE) clean
 
 tests:

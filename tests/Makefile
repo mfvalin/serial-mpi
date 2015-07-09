@@ -7,18 +7,18 @@
 # Parent dir Makefile.conf has all necessary vars
 include ../Makefile.conf
 
-TINC    = -I..
-LDFLAGS = -L..
+TINC    = -I.. -I../$(EC_ARCH)
+LDFLAGS = -L../$(EC_ARCH)
 MYLIBS    = $(LIBS) -l$(MODULE)
 MYF90FLAGS=$(INCPATH) $(DEFS) $(FCFLAGS)  $(MPEUFLAGS)
+
+all: ctest ftest ctest2 ftest2
 
 runtests: all
 	./ctest
 	@echo
 	./ftest
 	@echo
-
-all: ctest ftest
 
 ctest: ctest.c
 	$(CC) $(DEFS) $(TINC) $(ALLCFLAGS) -o $@ ctest.c $(LDFLAGS) $(MYLIBS)
